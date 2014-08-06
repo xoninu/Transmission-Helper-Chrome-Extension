@@ -6,9 +6,7 @@ function onClick(info, tab) {
   
   console.log(userSettings);
 
- //alert(info.linkUrl);
-
-    //reader.readAsText('http://piratebaytorrents.info/9306604/Linkin_Park_-_Rolling_In_The_Deep_(Adele_Cover_-_Live)_HDTV_1080.9306604.TPB.torrent');
+  console.log(info.linkUrl);
 }
 
 // Create item for context of type link.
