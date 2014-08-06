@@ -3,14 +3,14 @@
   "description": "Simply add torrents to transmission client via the context menu. This uses the web interface feature.",
   "version": "0.1",
   "icons": { "16": "icons/trans16.png", "48": "icons/trans48.png", "38": "icons/trans38.png" },
-   
-  "options_page": "options/options.html",
-   
-  "background": {
-	"scripts": ["jsScripts/jquery.min.js", "jsScripts/helpers.js", "jsScripts/transmissionHelpers.js", "jsScripts/background.js"]
-    }, 
   
-  "permissions": ["contextMenus", "storage", "http://*/"], 
-    
-  "manifest_version": 2
-}
+  "options_page": "options/options.html",
+  
+  "background": {
+   "scripts": ["jsScripts/jquery.min.js", "jsScripts/helpers.js", "jsScripts/transmissionHelpers.js", "jsScripts/background.js"]
+   }, 
+   
+   "permissions": ["contextMenus", "storage", "http://*/"], 
+   
+   "manifest_version": 2
+ }

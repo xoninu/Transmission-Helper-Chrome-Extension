@@ -8,22 +8,11 @@ console.log("Begin");
 
 // Saves options to chrome.storage
 function save_options() {
- 
-	if (document.getElementById('ip')){
-		refUserSettings.ip = document.getElementById('ip').value; 
-		}
-
-	if (document.getElementById('port')){
-		refUserSettings.port = document.getElementById('port').value; 
-		}
-
-	if (document.getElementById('username')){
-		refUserSettings.username = document.getElementById('username').value; 
-		}
-
-	if (document.getElementById('password')){
-		refUserSettings.password = document.getElementById('password').value; 
-		}
+	
+	refUserSettings.ip = document.getElementById('ip').value; 
+	refUserSettings.port = document.getElementById('port').value; 
+	refUserSettings.username = document.getElementById('username').value; 
+	refUserSettings.password = document.getElementById('password').value; 
 
 	console.log("save_options");
 	//console.log(refUserSettings.ip);
@@ -31,23 +20,23 @@ function save_options() {
 	//console.log(refUserSettings.username);
 	//console.log(refUserSettings.password);
 
-  chrome.storage.sync.set({
-    ip: refUserSettings.ip,
-    port: refUserSettings.port,
-    username: refUserSettings.username,
-    password: refUserSettings.password || "",
-  }, function() {
-	
-	if (!chrome.runtime.lastError)
-	{
-		console.log(chrome.runtime.lastError);
-	}
-	else
-	{
+	chrome.storage.sync.set({
+		ip: refUserSettings.ip,
+		port: refUserSettings.port,
+		username: refUserSettings.username,
+		password: refUserSettings.password || "",
+	}, function() {
+		
+		if (chrome.runtime.lastError)
+		{
+			console.log(chrome.runtime.lastError);
+		}
+		else
+		{
 		// Notify that we saved.
 		console.log('Settings saved!!!');
 	}
-  });
+});
 }
 
 // Restores saved data using the preferences
@@ -63,38 +52,27 @@ function restore_options() {
 	//console.log(defaultUserSettings.password);
 
 	chrome.storage.sync.get({
-    "ip": defaultUserSettings.ip,
-    "port": defaultUserSettings.port,
-    "username": defaultUserSettings.username,
-    "password": defaultUserSettings.password,
-  }, function(items) {
-  
-	refUserSettings.updateSettings(items);
+		"ip": defaultUserSettings.ip,
+		"port": defaultUserSettings.port,
+		"username": defaultUserSettings.username,
+		"password": defaultUserSettings.password,
+	}, function(items) {
+		
+		refUserSettings.updateSettings(items);
 
 	/*console.log(refUserSettings.ip);
 	console.log(refUserSettings.port);
 	console.log(refUserSettings.username);
 	console.log(refUserSettings.password);*/
 
-	if (document.getElementById('ip')){
-		document.getElementById('ip').value = refUserSettings.ip; 
-		}
-
-	if (document.getElementById('port')){
-		document.getElementById('port').value = refUserSettings.port; 
-		}
-
-	if (document.getElementById('username')){
-		document.getElementById('username').value = refUserSettings.username; 
-		}
-
-	if (document.getElementById('password')){
-		document.getElementById('password').value = refUserSettings.password; 
-		}
+	document.getElementById('ip').value = refUserSettings.ip; 
+	document.getElementById('port').value = refUserSettings.port; 
+	document.getElementById('username').value = refUserSettings.username; 
+	document.getElementById('password').value = refUserSettings.password; 
 
 	console.log("restore_options:finished");
 	
-  });
+});
 }
 
 //test connection with current settings before being saved
@@ -106,39 +84,28 @@ function test_connection() {
 	var username;
 	var password;
 	
-	if (document.getElementById('ip')){
-		ip = document.getElementById('ip').value; 
-		}
-
-	if (document.getElementById('port')){
-		port = document.getElementById('port').value; 
-		}
-
-	if (document.getElementById('username')){
-		username = document.getElementById('username').value; 
-		}
-
-	if (document.getElementById('password')){
-		password = document.getElementById('password').value; 
-		}
+	ip = document.getElementById('ip').value; 
+	port = document.getElementById('port').value; 
+	username = document.getElementById('username').value; 
+	password = document.getElementById('password').value; 
 
 	console.log("test connection");
 	
 	chrome.extension.getBackgroundPage().testRPCConfig(ip, port, password, username, function(result) {
-					
-			console.log("Ret: " + result);
+		
+		console.log("Ret: " + result);
+		
+		if (document.getElementById('result')){
+			password = document.getElementById('result').textContent = result; 
+		}
+		else {
 			
-			if (document.getElementById('result')){
-				password = document.getElementById('result').textContent = result; 
-			}
-			else {
-			
-				var newDiv = document.createElement("div"); 
-				newDiv.id = "result";
-				newDiv.textContent = result;
-				document.body.appendChild(newDiv);
-			}
-					
+			var newDiv = document.createElement("div"); 
+			newDiv.id = "result";
+			newDiv.textContent = result;
+			document.body.appendChild(newDiv);
+		}
+		
 	});
 	
 }

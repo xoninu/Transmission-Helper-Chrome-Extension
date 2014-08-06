@@ -29,60 +29,60 @@ function testRPCConfig(host, port, password, username, cbResult) {
         "tag": TAGNO
     });
 
-	var returnVal= "OOPS!!!";
-	
+    var returnVal= "OOPS!!!";
+    
     sendRPCRequest(data, function(req) {
         try {
 			//Success. Parse the response
             if (lastReqStatus == 200) {
-			
-				console.log(req.responseText);
-				
+             
+                console.log(req.responseText);
+                
                 var resp = JSON.parse(req.responseText);
                 if (resp["result"] == "success"){
-					console.log("Settings are correct :D");
-					returnVal = "Settings are correct :D. RPC API Version [" + resp["arguments"]["rpc-version"] + "]. Version [" + resp["arguments"]["version"] + "].";
-				}
-                else {
-					console.log("Settings not correct :(. Error: ", resp["result"]);
-					returnVal = "Settings not correct :(. Error: ", resp["result"];
-				}
-				
-				lastReqStatus = 0;
-            }
-            else {
+                   console.log("Settings are correct :D");
+                   returnVal = "Settings are correct :D. RPC API Version [" + resp["arguments"]["rpc-version"] + "]. Version [" + resp["arguments"]["version"] + "].";
+               }
+               else {
+                   console.log("Settings not correct :(. Error: ", resp["result"]);
+                       returnVal = "Settings not correct :(. Error: ", resp["result"];
+                   }
+                   
+                   lastReqStatus = 0;
+               }
+               else {
                 // unable to contact server
                 var title = "unable to contact " + rpcUrl;
                 var text = "";
                 switch (JSON.parse(lastReqStatus)) {
                     case 0:
-                        text = "no response";
-                        break;
+                    text = "no response";
+                    break;
                     case 401:
-                        text = "invalid username/password";
-                        break;
+                    text = "Unauthorized";
+                    break;
                     default:
-                        text = "unrecognized response";
-                        break;
+                    text = "unrecognized response";
+                    break;
                 }
                 console.log(title + " - " + text);
-				returnVal = title + " - " + text;
+                returnVal = title + " - " + text;
             }
         } catch (err) {
             returnVal = "Something went really wrong!!!!!!";
         }
-		
-		sessionID = "";
-	
-		if (typeof cbResult == "undefined"){
-			console.log("Result callback not available");
-		}
-		else {
-			console.log("Invoking callback with result : " + returnVal);
-			cbResult(returnVal);
-		}
+        
+        sessionID = "";
+        
+        if (typeof cbResult == "undefined"){
+         console.log("Result callback not available");
+     }
+     else {
+         console.log("Invoking callback with result : " + returnVal);
+         cbResult(returnVal);
+     }
 
-	}, rpcUrl, password, username);
+ }, rpcUrl, password, username);
 }
 
 //Generic RPC Request method
@@ -91,27 +91,27 @@ function sendRPCRequest(data, cbFunction, rpcUrl, rpcPassword, rpcUsername) {
     
     if (typeof rpcUrl == "undefined"){
         rpcUrl = "http://" + refUserSettings.ip + ":" + refUserSettings.port + "/transmission/rpc";
-		}
-		
+    }
+    
     if (typeof rpcUsername == "undefined")
         rpcUsername = refUserSettings.username;
     if (typeof rpcPassword == "undefined")
         rpcPassword = refUserSettings.password;
 
-	console.log(rpcUrl);
-	console.log(rpcUsername);
-	console.log(rpcPassword);
-	
+    console.log(rpcUrl);
+    console.log(rpcUsername);
+    console.log(rpcPassword);
+    
     req.open("POST", rpcUrl, true, rpcUsername, rpcPassword);
-	
+    
 	//Refer to 2.3.1.  CSRF Protection in reference document
 	req.setRequestHeader("X-Transmission-Session-Id", sessionID);
     req.setRequestHeader("Content-Type", "application/json");
 
     req.onreadystatechange = function() {
-		
+      
         if (req.readyState == READYSTATE.DONE.value) {
-		
+          
 			//Refer to 2.3.1.  CSRF Protection in reference document
 			if (req.getResponseHeader("X-Transmission-Session-Id")) {
                 sessionID = req.getResponseHeader("X-Transmission-Session-Id");
@@ -119,14 +119,14 @@ function sendRPCRequest(data, cbFunction, rpcUrl, rpcPassword, rpcUsername) {
             }
             if (typeof cbFunction != "undefined")
                 cbFunction(req);
-				
+            
             console.log("lastReqStatus : " + req.status);
-			lastReqStatus = req.status;
+            lastReqStatus = req.status;
         }
-		else{
-			console.log("Ready State: " + req.readyState);
-		}
-    };
-	
-    req.send(data);
+        else{
+         console.log("Ready State: " + req.readyState);
+     }
+ };
+ 
+ req.send(data);
 }
