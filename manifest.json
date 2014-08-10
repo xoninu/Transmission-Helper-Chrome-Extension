@@ -7,10 +7,10 @@
   "options_page": "options/options.html",
   
   "background": {
-   "scripts": ["jsScripts/jquery.min.js", "jsScripts/helpers.js", "jsScripts/transmissionHelpers.js", "jsScripts/background.js"]
+   "scripts": ["jsScripts/jquery.min.js", "jsScripts/torrentHelpers.js", "jsScripts/helpers.js", "jsScripts/transmissionHelpers.js", "jsScripts/background.js"]
    }, 
    
-   "permissions": ["contextMenus", "storage", "http://*/"], 
+   "permissions": ["notifications", "contextMenus", "storage", "http://*/"], 
    
    "manifest_version": 2
  }

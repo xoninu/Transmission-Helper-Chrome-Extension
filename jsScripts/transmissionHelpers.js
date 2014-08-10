@@ -1,5 +1,3 @@
-var refUserSettings = chrome.extension.getBackgroundPage().userSettings;
-
 var lastReqStatus = 0;
 var sessionID = "";
 
@@ -17,10 +15,74 @@ var TAGNO = 0x535253; //SRS :D
 
 //Reference: https://trac.transmissionbt.com/browser/trunk/extras/rpc-spec.txt
 
+//Send RPC to Add torrent file
+function trAddTorrent(torrentURL) {
+ 
+    var refUserSettings = chrome.extension.getBackgroundPage().userSettings;
+    
+    // Build request
+    var data = JSON.stringify({
+        "method": "torrent-add",
+        "arguments": {
+            "filename": torrentURL,
+            "paused": false
+        },
+        "tag": TAGNO
+    });
+    
+    sendRPCRequest(data, function(req) {
+        try {
+            //Success. Parse the response
+            if (lastReqStatus == 200) {
+             
+                console.log(req.responseText);
+                
+                var resp = JSON.parse(req.responseText);
+                if (resp["result"] == "success"){
+                   console.log("Torrent Added. Name [" + resp["arguments"]["torrent-added"]["name"] + "], ID [" + resp["arguments"]["torrent-added"]["id"] + "], HashString [" + resp["arguments"]["torrent-added"]["hashString"] + "]");
+               }
+               else {
+
+                        if (resp["arguments"] == "torrent-duplicate"){
+                            console.log("Torrent already exist.");
+                        }
+                        else
+                        {
+                            console.log("Failed to add torrent. ", resp["result"]);
+                        }
+                   }
+                   
+                   lastReqStatus = 0;
+               }
+               else {
+                // unable to contact server
+                var title = "unable to contact " + rpcUrl;
+                var text = "";
+                switch (JSON.parse(lastReqStatus)) {
+                    case 0:
+                    text = "no response";
+                    break;
+                    case 401:
+                    text = "Unauthorized";
+                    break;
+                    default:
+                    text = "unrecognized response";
+                    break;
+                }
+                console.log(title + " - " + text);
+            }
+        }
+    catch (err) {
+            console.log("Something went really wrong!!!!!!");
+        }
+     }, refUserSettings.getRpcURL(), refUserSettings.password, refUserSettings.username);
+}
+
 //Send RPC Test
 function testRPCConfig(host, port, password, username, cbResult) {
 
-	var rpcUrl = "http://" + host + ":" + port + "/transmission/rpc";
+	var refUserSettings = chrome.extension.getBackgroundPage().userSettings;
+    var rpcUrl = "http://" + host + ":" + port + "/transmission/rpc";
     
 	// Build request
     var data = JSON.stringify({
@@ -87,6 +149,7 @@ function testRPCConfig(host, port, password, username, cbResult) {
 
 //Generic RPC Request method
 function sendRPCRequest(data, cbFunction, rpcUrl, rpcPassword, rpcUsername) {
+    var refUserSettings = chrome.extension.getBackgroundPage().userSettings;
     var req = new XMLHttpRequest();
     
     if (typeof rpcUrl == "undefined"){
@@ -112,20 +175,22 @@ function sendRPCRequest(data, cbFunction, rpcUrl, rpcPassword, rpcUsername) {
       
         if (req.readyState == READYSTATE.DONE.value) {
           
-			//Refer to 2.3.1.  CSRF Protection in reference document
-			if (req.getResponseHeader("X-Transmission-Session-Id")) {
-                sessionID = req.getResponseHeader("X-Transmission-Session-Id");
-                return sendRPCRequest(data, cbFunction, rpcUrl, rpcPassword, rpcUsername);
-            }
-            if (typeof cbFunction != "undefined")
-                cbFunction(req);
-            
-            console.log("lastReqStatus : " + req.status);
-            lastReqStatus = req.status;
+    			//Refer to 2.3.1.  CSRF Protection in reference document
+    			if (req.getResponseHeader("X-Transmission-Session-Id")) {
+              sessionID = req.getResponseHeader("X-Transmission-Session-Id");
+              return sendRPCRequest(data, cbFunction, rpcUrl, rpcPassword, rpcUsername);
+          }
+
+          if (typeof cbFunction != "undefined"){
+              cbFunction(req);
+          }
+                
+          console.log("lastReqStatus : " + req.status);
+          lastReqStatus = req.status;
         }
         else{
-         console.log("Ready State: " + req.readyState);
-     }
+          console.log("Ready State: " + req.readyState);
+        }
  };
  
  req.send(data);

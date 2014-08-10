@@ -1,30 +1,28 @@
-var refUserSettings = chrome.extension.getBackgroundPage().userSettings;
-
 console.log("Begin");
-//console.log(refUserSettings.ip);
-//console.log(refUserSettings.port);
-//console.log(refUserSettings.username);
-//console.log(refUserSettings.password);
+//console.log(chrome.extension.getBackgroundPage().userSettings.ip);
+//console.log(chrome.extension.getBackgroundPage().userSettings.port);
+//console.log(chrome.extension.getBackgroundPage().userSettings.username);
+//console.log(chrome.extension.getBackgroundPage().userSettings.password);
 
 // Saves options to chrome.storage
 function save_options() {
 	
-	refUserSettings.ip = document.getElementById('ip').value; 
-	refUserSettings.port = document.getElementById('port').value; 
-	refUserSettings.username = document.getElementById('username').value; 
-	refUserSettings.password = document.getElementById('password').value; 
+	chrome.extension.getBackgroundPage().userSettings.ip = document.getElementById('ip').value; 
+	chrome.extension.getBackgroundPage().userSettings.port = document.getElementById('port').value; 
+	chrome.extension.getBackgroundPage().userSettings.username = document.getElementById('username').value; 
+	chrome.extension.getBackgroundPage().userSettings.password = document.getElementById('password').value; 
 
 	console.log("save_options");
-	//console.log(refUserSettings.ip);
-	//console.log(refUserSettings.port);
-	//console.log(refUserSettings.username);
-	//console.log(refUserSettings.password);
+	//console.log(chrome.extension.getBackgroundPage().userSettings.ip);
+	//console.log(chrome.extension.getBackgroundPage().userSettings.port);
+	//console.log(chrome.extension.getBackgroundPage().userSettings.username);
+	//console.log(chrome.extension.getBackgroundPage().userSettings.password);
 
 	chrome.storage.sync.set({
-		ip: refUserSettings.ip,
-		port: refUserSettings.port,
-		username: refUserSettings.username,
-		password: refUserSettings.password || "",
+		ip: chrome.extension.getBackgroundPage().userSettings.ip,
+		port: chrome.extension.getBackgroundPage().userSettings.port,
+		username: chrome.extension.getBackgroundPage().userSettings.username,
+		password: chrome.extension.getBackgroundPage().userSettings.password || "",
 	}, function() {
 		
 		if (chrome.runtime.lastError)
@@ -58,17 +56,17 @@ function restore_options() {
 		"password": defaultUserSettings.password,
 	}, function(items) {
 		
-		refUserSettings.updateSettings(items);
+	chrome.extension.getBackgroundPage().userSettings.updateSettings(items);
 
-	/*console.log(refUserSettings.ip);
-	console.log(refUserSettings.port);
-	console.log(refUserSettings.username);
-	console.log(refUserSettings.password);*/
+	console.log(chrome.extension.getBackgroundPage().userSettings.ip);
+	console.log(chrome.extension.getBackgroundPage().userSettings.port);
+	console.log(chrome.extension.getBackgroundPage().userSettings.username);
+	console.log(chrome.extension.getBackgroundPage().userSettings.password);
 
-	document.getElementById('ip').value = refUserSettings.ip; 
-	document.getElementById('port').value = refUserSettings.port; 
-	document.getElementById('username').value = refUserSettings.username; 
-	document.getElementById('password').value = refUserSettings.password; 
+	document.getElementById('ip').value = chrome.extension.getBackgroundPage().userSettings.ip; 
+	document.getElementById('port').value = chrome.extension.getBackgroundPage().userSettings.port; 
+	document.getElementById('username').value = chrome.extension.getBackgroundPage().userSettings.username; 
+	document.getElementById('password').value = chrome.extension.getBackgroundPage().userSettings.password; 
 
 	console.log("restore_options:finished");
 	
