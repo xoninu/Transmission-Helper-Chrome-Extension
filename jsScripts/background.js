@@ -2,12 +2,12 @@ var userSettings = new UserSettings();
 
 //Reload settings
 chrome.storage.sync.get({
-		"ip": userSettings.ip,
-		"port": userSettings.port,
-		"username": userSettings.username,
-		"password": userSettings.password,
-	}, function(items) {
-		
+	"ip": userSettings.ip,
+	"port": userSettings.port,
+	"username": userSettings.username,
+	"password": userSettings.password,
+}, function(items) {
+
 	userSettings.updateSettings(items);
 
 	/*console.log(userSettings.ip);
@@ -26,17 +26,13 @@ function handleLinkClick(info, tab) {
 
 	console.log(info.linkUrl);
 
-	var validTorrent = isValidTorrentURL(info.linkUrl);
-	var msg = "Torrent file added!!!!";
-	if (validTorrent == false){
-		msg = "Invalid Torrent File!!!!"
-	}
-
-	showNotif("Transmission Client Helper", msg, "icons/trans48.png");
-
-	if (validTorrent == true){
+	if (isValidTorrentURL(info.linkUrl) == true){
+		showNotif("Transmission Client Helper", "Torrent file added!!!!", "icons/trans96.png");
 		trAddTorrent(info.linkUrl);
+		return;
 	}
+
+	showNotif("Transmission Client Helper", "Invalid Torrent File!!!!", "icons/trans96.png");
 }
 
 // Create item for context of type link.

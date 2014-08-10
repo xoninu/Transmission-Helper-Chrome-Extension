@@ -7,6 +7,6 @@ function isValidTorrentURL(torrentURL){
 
 		return true;
 	}
-		
+	
 	return false;
 }
